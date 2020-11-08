@@ -4,6 +4,10 @@
 
   outputs = { self, nixpkgs }: {
 
+    overlay = final: prev: {
+      nuclear = self.defaultPackage.x86_64-linux;
+    };
+
     defaultPackage.x86_64-linux =
       with import nixpkgs { system = "x86_64-linux";};
       stdenv.mkDerivation {
@@ -67,10 +71,10 @@
 
         mv $out/share/nuclear/*.so $out/lib
         mv usr/share/* $out/share/
-        ln -s $out/share/nuclear/nuclear $out/bin/nurclear
+        ln -s $out/share/nuclear/nuclear $out/bin/nuclear
 
         substituteInPlace $out/share/applications/nuclear.desktop  \
-          --replace "nuclear %U" "$out/bin/nuclear $U"
+          --replace "/opt/nuclear/nuclear %U" "$out/bin/nuclear $U"
           '';
 
         preFixup = ''
